@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   welcomeCard: {
-    backgroundColor: '#4A90D9',
+    backgroundColor: '#3333CC',
     borderRadius: 12,
     padding: 25,
     marginBottom: 15,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4A90D9',
+    color: '#E85A00',
   },
   statLabel: {
     fontSize: 13,

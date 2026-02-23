@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#4A90D9',
+    backgroundColor: '#3333CC',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   role: {
     fontSize: 13,
-    color: '#4A90D9',
+    color: '#E85A00',
     fontWeight: '600',
     marginTop: 4,
     letterSpacing: 1,

@@ -10,6 +10,7 @@ import {
   Platform,
   Image,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useAppDispatch } from "../app/hooks";
 import { login } from "../features/auth/authSlice";
 import { UserProfile } from "../features/auth/types";
@@ -48,6 +49,7 @@ export default function LoginScreen() {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
     const trimmedEmail = email.trim().toLowerCase();
@@ -83,14 +85,27 @@ export default function LoginScreen() {
           keyboardType="email-address"
         />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#999"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            placeholderTextColor="#999"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowPassword((v) => !v)}
+          >
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={22}
+              color="#999"
+            />
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
@@ -139,8 +154,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
   },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginBottom: 15,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 15,
+    fontSize: 16,
+  },
+  eyeButton: {
+    paddingHorizontal: 12,
+  },
   button: {
-    backgroundColor: "#4A90D9",
+    backgroundColor: "#3333CC",
     borderRadius: 8,
     padding: 15,
     alignItems: "center",
@@ -154,7 +186,7 @@ const styles = StyleSheet.create({
   hint: {
     marginTop: 40,
     padding: 15,
-    backgroundColor: "#e8f4fd",
+    backgroundColor: "#FFF3EC",
     borderRadius: 8,
   },
   hintTitle: {

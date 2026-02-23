@@ -14,10 +14,10 @@ function MiniAppTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#4A90D9',
+        tabBarActiveTintColor: '#3333CC',
         tabBarInactiveTintColor: '#999',
         tabBarStyle: { paddingBottom: 5, height: 55 },
-        headerStyle: { backgroundColor: '#4A90D9' },
+        headerStyle: { backgroundColor: '#3333CC' },
         headerTintColor: '#fff',
         headerTitleStyle: { fontWeight: '600' },
       }}
