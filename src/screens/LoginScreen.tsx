@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -19,8 +19,8 @@ const MOCK_USERS: Record<string, { password: string; profile: UserProfile }> = {
   "superadmin@a.com": {
     password: "password",
     profile: {
-      id: "1",
-      name: "Super Admin",
+      id: "TM39712",
+      name: "Aiman Superadmin",
       email: "superadmin@a.com",
       role: "superadmin",
     },
@@ -28,8 +28,8 @@ const MOCK_USERS: Record<string, { password: string; profile: UserProfile }> = {
   "admin@a.com": {
     password: "password",
     profile: {
-      id: "2",
-      name: "Admin User",
+      id: "TM39713",
+      name: "Aiman Admin",
       email: "admin@a.com",
       role: "admin",
     },
@@ -37,8 +37,8 @@ const MOCK_USERS: Record<string, { password: string; profile: UserProfile }> = {
   "user@a.com": {
     password: "password",
     profile: {
-      id: "3",
-      name: "Regular User",
+      id: "TM39714",
+      name: "Aiman User",
       email: "user@a.com",
       role: "user",
     },
@@ -50,6 +50,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const passwordRef = useRef<TextInput>(null);
 
   const handleLogin = () => {
     const trimmedEmail = email.trim().toLowerCase();
@@ -83,10 +84,14 @@ export default function LoginScreen() {
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
+          returnKeyType="next"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          submitBehavior="submit"
         />
 
         <View style={styles.passwordContainer}>
           <TextInput
+            ref={passwordRef}
             style={styles.passwordInput}
             placeholder="Password"
             placeholderTextColor="#999"
@@ -94,6 +99,8 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
+            returnKeyType="done"
+            onSubmitEditing={handleLogin}
           />
           <TouchableOpacity
             style={styles.eyeButton}
