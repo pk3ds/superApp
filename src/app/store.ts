@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authReducer from '../features/auth/authSlice';
+import geomaticsReducer from '../features/geomatics/geomaticsSlice';
 
 const authPersistConfig = {
   key: 'auth',
@@ -13,6 +14,7 @@ const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
+    geomatics: geomaticsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
