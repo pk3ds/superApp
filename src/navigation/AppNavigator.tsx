@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -50,7 +51,10 @@ function MiniAppTabs() {
       screenOptions={{
         tabBarActiveTintColor: '#3333CC',
         tabBarInactiveTintColor: '#999',
-        tabBarStyle: { paddingBottom: 5, height: 55 },
+        tabBarStyle: {
+          paddingBottom: Platform.OS === 'android' ? 12 : 5,
+          height: Platform.OS === 'android' ? 68 : 55,
+        },
         headerStyle: { backgroundColor: '#3333CC' },
         headerTintColor: '#fff',
         headerTitleStyle: { fontWeight: '600' },
@@ -67,10 +71,10 @@ function MiniAppTabs() {
         }}
       />
       <Tab.Screen
-        name="Geomatics"
+        name="Maps"
         component={GeomaticsStack}
         options={{
-          title: 'Geomatics',
+          title: 'Maps',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" size={size} color={color} />
