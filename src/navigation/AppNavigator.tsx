@@ -7,45 +7,14 @@ import { useAppSelector } from '../app/hooks';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../miniApps/profile/ProfileScreen';
 import DashboardScreen from '../miniApps/dashboard/DashboardScreen';
-import { MapViewScreen, GPSToolsScreen, DataCollectionScreen, WorkLocationsScreen } from '../miniApps/geomatics';
+import { MapViewScreen } from '../miniApps/geomatics';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function GeomaticsStack() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: '#3333CC' },
-        headerTintColor: '#fff',
-        headerTitleStyle: { fontWeight: '600' },
-      }}
-    >
-      <Stack.Screen
-        name="MapView"
-        component={MapViewScreen}
-        options={{ title: 'Map' }}
-      />
-      <Stack.Screen
-        name="GPSTools"
-        component={GPSToolsScreen}
-        options={{ title: 'GPS Tools' }}
-      />
-      <Stack.Screen
-        name="DataCollection"
-        component={DataCollectionScreen}
-        options={{ title: 'Data Collection' }}
-      />
-      <Stack.Screen
-        name="WorkLocations"
-        component={WorkLocationsScreen}
-        options={{ title: 'Company Locations' }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 function MiniAppTabs() {
+  const userRole = useAppSelector((state) => state.auth.user?.role);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -70,17 +39,18 @@ function MiniAppTabs() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Maps"
-        component={GeomaticsStack}
-        options={{
-          title: 'Maps',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="map-outline" size={size} color={color} />
-          ),
-        }}
-      />
+      {userRole !== 'user' && (
+        <Tab.Screen
+          name="Maps"
+          component={MapViewScreen}
+          options={{
+            title: 'Map',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="map-outline" size={size} color={color} />
+            ),
+          }}
+        />
+      )}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}

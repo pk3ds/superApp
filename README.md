@@ -2,6 +2,8 @@
 
 A modular SuperApp mobile application built with React Native (Expo) that supports multiple Mini Apps under a single container with shared authentication.
 
+---
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -34,6 +36,8 @@ npm run ios        # Start on iOS
 npm run web        # Start on Web
 ```
 
+---
+
 ## Architecture Explanation
 
 The app follows a **SuperApp container architecture** with the following layers:
@@ -54,12 +58,21 @@ Authentication state is managed centrally via Redux Toolkit. All Mini Apps acces
 
 Self-contained feature modules located in `src/miniApps/`. Each Mini App is a standalone screen (or set of screens) that accesses shared state through Redux hooks. Mini Apps are decoupled from each other and only depend on the shared store.
 
+**Required Mini Apps:**
+- **Dashboard** — Welcome message and role-based content
+- **Profile** — Displays logged-in user information with logout
+
+**Additional Mini Apps (see Initiatives):**
+- **Geomatics (Map View)** — Interactive map showing nearby TM work locations
+
 ### 4. Navigation
 
 Uses React Navigation with conditional rendering:
 
 - **Unauthenticated** → Native Stack with Login screen
-- **Authenticated** → Bottom Tab Navigator hosting the Mini Apps (Dashboard, Profile)
+- **Authenticated** → Bottom Tab Navigator hosting the Mini Apps
+
+Role-based tab visibility: the **Maps** tab is hidden for the `user` role and only visible to `admin` and `superadmin`.
 
 ### Data Flow
 
@@ -68,49 +81,54 @@ User Login → dispatch(login(profile)) → Redux Store (authSlice) → AsyncSto
                                                 ↓
                                     All Mini Apps read via useAppSelector
                                         ├── Dashboard Mini App
-                                        └── Profile Mini App
+                                        ├── Profile Mini App
+                                        └── Geomatics Mini App (admin/superadmin only)
 ```
+
+---
 
 ## Folder Structure
 
 ```
 superApp/
-├── App.tsx                              # Entry point - Provider wrappers (Redux, Persist, Navigation)
+├── App.tsx                                   # Entry point — Provider wrappers (Redux, Persist, Navigation)
 ├── src/
 │   ├── app/
-│   │   ├── store.ts                     # Redux store config with redux-persist
-│   │   └── hooks.ts                     # Typed useAppSelector & useAppDispatch hooks
+│   │   ├── store.ts                          # Redux store config with redux-persist
+│   │   └── hooks.ts                          # Typed useAppSelector & useAppDispatch hooks
 │   ├── features/
-│   │   └── auth/
-│   │       ├── authSlice.ts             # Auth Redux slice (login/logout reducers)
-│   │       └── types.ts                 # UserProfile & AuthState TypeScript interfaces
+│   │   ├── auth/
+│   │   │   ├── authSlice.ts                  # Auth Redux slice (login/logout reducers)
+│   │   │   └── types.ts                      # UserProfile & AuthState TypeScript interfaces
+│   │   └── geomatics/                        # [Initiative] Geomatics feature state
+│   │       ├── geomaticsSlice.ts             # Location & map settings Redux slice
+│   │       ├── types.ts                      # Coordinate, MapSettings TypeScript interfaces
+│   │       └── index.ts                      # Barrel export
 │   ├── miniApps/
+│   │   ├── dashboard/
+│   │   │   └── DashboardScreen.tsx           # Dashboard — welcome message & role-based content
 │   │   ├── profile/
-│   │   │   └── ProfileScreen.tsx        # Profile Mini App - displays user info + logout
-│   │   └── dashboard/
-│   │       └── DashboardScreen.tsx      # Dashboard Mini App - welcome & role-based message
+│   │   │   └── ProfileScreen.tsx             # Profile — user info & logout
+│   │   └── geomatics/                        # [Initiative] Geomatics Mini App
+│   │       ├── MapViewScreen.tsx             # Interactive map with TM work locations
+│   │       ├── workLocations.ts              # Static TM location data
+│   │       └── index.ts                      # Barrel export
 │   ├── screens/
-│   │   └── LoginScreen.tsx              # Login screen with hardcoded mock authentication
+│   │   └── LoginScreen.tsx                   # Login screen with mock authentication
 │   └── navigation/
-│       └── AppNavigator.tsx             # Conditional auth flow & bottom tab navigation
-├── app.json                             # Expo configuration
+│       └── AppNavigator.tsx                  # Auth flow, bottom tabs, role-based tab visibility
+├── app.json                                  # Expo configuration
 ├── package.json
 └── tsconfig.json
 ```
 
-### Design Rationale
-
-- **`src/app/`** — Centralized store and hooks, following the official Redux Toolkit recommended structure
-- **`src/features/`** — Feature-based grouping (auth slice, types) for scalability
-- **`src/miniApps/`** — Each Mini App is isolated in its own folder, making it easy to add or remove modules
-- **`src/screens/`** — Container-level screens (Login) that are not Mini Apps
-- **`src/navigation/`** — Navigation logic separated from UI components
+---
 
 ## State Management
 
 ### Redux Toolkit
 
-The app uses **Redux Toolkit** with a single `authSlice` to manage authentication state globally.
+The app uses **Redux Toolkit** with two slices managing different domains of global state.
 
 **Store structure:**
 
@@ -119,11 +137,15 @@ The app uses **Redux Toolkit** with a single `authSlice` to manage authenticatio
   auth: {
     user: UserProfile | null;   // Logged-in user's profile
     isAuthenticated: boolean;   // Authentication status
+  },
+  geomatics: {                  // [Initiative]
+    currentLocation: Coordinate | null; // User's current GPS position
+    mapSettings: MapSettings;   // Map type (standard/satellite/hybrid)
   }
 }
 ```
 
-**UserProfile interface:**
+**UserProfile interface (as per assignment):**
 
 ```typescript
 interface UserProfile {
@@ -134,45 +156,42 @@ interface UserProfile {
 }
 ```
 
-**Auth Slice** (`src/features/auth/authSlice.ts`) provides two reducers:
+### Slices
 
-- `login(state, action: PayloadAction<UserProfile>)` — Sets the user profile and marks as authenticated
-- `logout(state)` — Clears the user profile and marks as unauthenticated
+**`authSlice`** (`src/features/auth/authSlice.ts`)
+- `login(profile)` — Sets the user and marks as authenticated
+- `logout()` — Clears the user and marks as unauthenticated
+
+**`geomaticsSlice`** (`src/features/geomatics/geomaticsSlice.ts`) — *[Initiative]*
+- `setCurrentLocation(coordinate)` — Updates the user's current GPS position
+- `updateMapSettings(settings)` — Updates map display settings (type, zoom, etc.)
 
 ### Typed Hooks
 
-Typed hooks (`useAppSelector`, `useAppDispatch`) are defined in `src/app/hooks.ts` and used throughout the app to ensure full TypeScript type safety when reading state or dispatching actions.
+Typed hooks (`useAppSelector`, `useAppDispatch`) in `src/app/hooks.ts` ensure full TypeScript type safety when reading state or dispatching actions.
 
 ### State Persistence
 
-The auth state is persisted to device storage using `redux-persist` with `@react-native-async-storage/async-storage`. This means:
+The `auth` slice is persisted to device storage using `redux-persist` with `AsyncStorage`:
 
 - Users remain logged in after closing and reopening the app
-- Logging out clears both the Redux state and persisted storage
-- The `PersistGate` component in `App.tsx` ensures the app waits for state rehydration before rendering
+- Logging out clears both the Redux store and persisted storage
+- `PersistGate` in `App.tsx` ensures state rehydration before rendering
 
-### Why This Approach
-
-- **Single source of truth** — One Redux store shared across all Mini Apps
-- **Predictable state updates** — Redux's unidirectional data flow ensures consistency
-- **Type safety** — TypeScript interfaces + typed hooks prevent runtime errors
-- **Persistence** — `redux-persist` provides seamless session management
-- **Scalability** — New slices can be added independently for new Mini App features
+---
 
 ## How to Add New Mini Apps
 
-Adding a new Mini App to the SuperApp requires just 3 steps:
+Adding a new Mini App requires 3 steps.
 
-### Step 1: Create the Mini App
-
-Create a new folder under `src/miniApps/` with your screen component:
+### Step 1: Create the Mini App screen
 
 ```
-src/miniApps/settings/
-└── SettingsScreen.tsx
+src/miniApps/<featureName>/
+└── <Feature>Screen.tsx
 ```
 
-### Step 2: Build the Screen Component
+### Step 2: Build the screen component
 
 Use the shared typed hooks to access global state:
 
@@ -181,80 +200,129 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { useAppSelector } from '../../app/hooks';
 
-export default function SettingsScreen() {
+export default function MyFeatureScreen() {
   const user = useAppSelector((state) => state.auth.user);
 
   return (
     <View>
-      <Text>Settings for {user?.name}</Text>
+      <Text>Hello, {user?.name}</Text>
     </View>
   );
 }
 ```
 
-### Step 3: Register in Navigation
+### Step 3: Register in AppNavigator
 
-Add a new `Tab.Screen` in `src/navigation/AppNavigator.tsx`:
+In `src/navigation/AppNavigator.tsx`, add a `Tab.Screen` inside `MiniAppTabs`:
 
 ```tsx
-import SettingsScreen from '../miniApps/settings/SettingsScreen';
+import MyFeatureScreen from '../miniApps/myFeature/MyFeatureScreen';
 
-// Inside MiniAppTabs component:
 <Tab.Screen
-  name="Settings"
-  component={SettingsScreen}
+  name="MyFeature"
+  component={MyFeatureScreen}
   options={{
-    title: 'Settings',
+    title: 'My Feature',
     tabBarIcon: ({ color, size }) => (
-      <Ionicons name="settings-outline" size={size} color={color} />
+      <Ionicons name="star-outline" size={size} color={color} />
     ),
   }}
 />
 ```
 
-### Optional: Add Mini App-Specific State
+### Optional: Add Mini App-specific state
 
-If the new Mini App needs its own state:
-
-1. Create a new slice in `src/features/<featureName>/`
-2. Add the reducer to the store in `src/app/store.ts`
+1. Create `src/features/<featureName>/featureSlice.ts`
+2. Register it in `src/app/store.ts`:
 
 ```typescript
-// src/app/store.ts
-import settingsReducer from '../features/settings/settingsSlice';
+import featureReducer from '../features/featureName/featureSlice';
 
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
-    settings: settingsReducer,  // Add new reducer here
+    feature: featureReducer,
   },
 });
 ```
 
+---
+
+## Initiatives (Beyond Assignment Scope)
+
+### 1. Geomatics Mini App (Map View)
+
+An interactive map screen displaying nearby TM work locations:
+- Map style switching (Standard / Satellite / Hybrid) via Leaflet in a WebView
+- User location dot with auto-centering
+- TM office markers with distance calculation (Haversine formula)
+- Draggable bottom sheet listing locations sorted by distance
+- Tap navigate icon → opens Apple Maps / Google Maps / Waze
+
+### 2. Role-Based Access Control (RBAC)
+
+A basic RBAC system implemented at the navigation level using the authenticated user's `role` field from the Redux store:
+
+| Tab / Mini App | `superadmin` | `admin` | `user` |
+| -------------- | :----------: | :-----: | :----: |
+| Dashboard      | ✅           | ✅      | ✅     |
+| Maps           | ✅           | ✅      | ❌     |
+| Profile        | ✅           | ✅      | ✅     |
+
+Only the **Maps** tab is access-restricted. All other Mini Apps are visible to every authenticated role. Enforced in `AppNavigator.tsx`:
+
+```tsx
+{userRole !== 'user' && (
+  <Tab.Screen name="Maps" component={MapViewScreen} ... />
+)}
+```
+
+### 3. Persistent Login Session (redux-persist)
+
+The assignment requires login/logout but does not specify that the session must survive app restarts. This app uses `redux-persist` with `AsyncStorage` to persist auth state, so users remain logged in after closing and reopening the app without re-entering credentials.
+
+```typescript
+const authPersistConfig = { key: 'auth', storage: AsyncStorage };
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+```
+
+### 4. Enhanced UI
+
+- Password visibility toggle on the Login screen
+- Time-aware greeting on the Dashboard (Good morning / afternoon / evening)
+- Role description cards with quick action shortcuts on the Dashboard
+
+---
+
 ## Assumptions
 
-- **Mock authentication**: No backend is used. Three hardcoded user accounts are provided for testing different roles (superadmin, admin, user).
-- **Persistent session**: Auth state is persisted to device storage via `redux-persist` and `AsyncStorage`. Users remain logged in across app restarts.
-- **Expo managed workflow**: The app uses Expo's managed workflow for simplicity. No native module configuration is required.
-- **Functional components only**: All components use React functional components with hooks, as required by the assignment.
-- **Minimal UI styling**: The focus is on architecture, state management, and modularity rather than pixel-perfect UI design.
+- **Mock authentication** — No backend is used. Three hardcoded accounts are provided for testing different roles.
+- **Expo managed workflow** — Uses Expo's managed workflow. No native module configuration is required.
+- **Functional components only** — All components use React functional components with hooks, as required by the assignment.
+- **TM work locations are static** — The list of company locations in the Geomatics Mini App is hardcoded in `src/miniApps/geomatics/workLocations.ts` and does not fetch from a live API.
+
+---
 
 ## Tech Stack
 
-| Technology                | Purpose                         |
-| ------------------------- | ------------------------------- |
-| React Native (Expo)       | Mobile framework                |
-| TypeScript                | Type-safe development           |
-| Redux Toolkit             | Global state management         |
-| redux-persist             | State persistence               |
-| AsyncStorage              | Device storage for persistence  |
-| React Navigation          | Screen navigation               |
-| @expo/vector-icons        | Tab bar icons                   |
+| Technology                | Purpose                                       |
+| ------------------------- | --------------------------------------------- |
+| React Native (Expo)       | Mobile framework                              |
+| TypeScript                | Type-safe development                         |
+| Redux Toolkit             | Global state management                       |
+| redux-persist             | Auth state persistence across restarts        |
+| AsyncStorage              | Device storage for persistence                |
+| React Navigation          | Screen navigation (stack + bottom tabs)       |
+| @expo/vector-icons        | Tab bar and UI icons                          |
+| expo-location             | GPS location for map centering *[Initiative]* |
+| react-native-webview      | Leaflet map rendering *[Initiative]*          |
+
+---
 
 ## Demo Accounts
 
-| Email            | Password | Role       |
-| ---------------- | -------- | ---------- |
-| superadmin@a.com | password | superadmin |
-| admin@a.com      | password | admin      |
-| user@a.com       | password | user       |
+| Email            | Password | Role       | Maps Access |
+| ---------------- | -------- | ---------- | ----------- |
+| superadmin@a.com | password | superadmin | Yes         |
+| admin@a.com      | password | admin      | Yes         |
+| user@a.com       | password | user       | No          |
