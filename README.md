@@ -290,7 +290,10 @@ const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 - Password visibility toggle on the Login screen
 - Time-aware greeting on the Dashboard (Good morning / afternoon / evening)
-- Role description cards with quick action shortcuts on the Dashboard
+- Role description cards with quick action shortcuts on the Dashboard:
+  - **Profile** — visible to all roles
+  - **Maps** — visible to `admin` and `superadmin` only (mirrors tab visibility)
+  - **Help** — visible to all roles
 
 ---
 
