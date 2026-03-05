@@ -66,6 +66,12 @@ export default function DashboardScreen() {
         ]
       : []),
     {
+      label: "Shop",
+      icon: "storefront-outline",
+      color: "#27AE60",
+      onPress: () => navigation.navigate("Shop"),
+    },
+    {
       label: "Help",
       icon: "help-circle-outline",
       color: "#8E44AD",
@@ -148,7 +154,7 @@ export default function DashboardScreen() {
       <View style={styles.statsRow}>
         <View style={[styles.statBox, { borderTopColor: "#3333CC" }]}>
           <Ionicons name="apps-outline" size={22} color="#3333CC" />
-          <Text style={[styles.statNum, { color: "#3333CC" }]}>{user.role !== "user" ? 2 : 1}</Text>
+          <Text style={[styles.statNum, { color: "#3333CC" }]}>{user.role !== "user" ? 4 : 3}</Text>
           <Text style={styles.statLabel}>Active Apps</Text>
         </View>
         <View style={[styles.statBox, { borderTopColor: "#E85A00" }]}>
