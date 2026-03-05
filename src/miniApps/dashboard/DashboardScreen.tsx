@@ -55,25 +55,21 @@ export default function DashboardScreen() {
       color: "#3333CC",
       onPress: () => navigation.navigate("Profile"),
     },
+    ...(user.role !== "user"
+      ? [
+          {
+            label: "Maps",
+            icon: "map-outline" as keyof typeof Ionicons.glyphMap,
+            color: "#E85A00",
+            onPress: () => navigation.navigate("Maps"),
+          },
+        ]
+      : []),
     {
-      label: "Settings",
-      icon: "settings-outline",
-      color: "#E85A00",
-      onPress: () =>
-        Alert.alert(
-          "Coming Soon",
-          "Settings will be available in a future update.",
-        ),
-    },
-    {
-      label: "Notifications",
-      icon: "notifications-outline",
+      label: "Shop",
+      icon: "storefront-outline",
       color: "#27AE60",
-      onPress: () =>
-        Alert.alert(
-          "Coming Soon",
-          "Notifications will be available in a future update.",
-        ),
+      onPress: () => navigation.navigate("Shop"),
     },
     {
       label: "Help",
@@ -158,7 +154,7 @@ export default function DashboardScreen() {
       <View style={styles.statsRow}>
         <View style={[styles.statBox, { borderTopColor: "#3333CC" }]}>
           <Ionicons name="apps-outline" size={22} color="#3333CC" />
-          <Text style={[styles.statNum, { color: "#3333CC" }]}>2</Text>
+          <Text style={[styles.statNum, { color: "#3333CC" }]}>{user.role !== "user" ? 4 : 3}</Text>
           <Text style={styles.statLabel}>Active Apps</Text>
         </View>
         <View style={[styles.statBox, { borderTopColor: "#E85A00" }]}>
