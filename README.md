@@ -22,6 +22,28 @@
 
 ---
 
+## Cross References
+
+The enclosed document cross refers the following documents:
+
+| Document Ref. No | Document Name |
+| ---------------- | ------------- |
+| —                | —             |
+
+---
+
+## Distribution
+
+The enclosed document should be distributed to:
+
+| Department Name / Position |
+| -------------------------- |
+| TM ONE Division Integrated Operation Center / Network Operation Center |
+| TM ONE Division Technology Delivery / Technology Engineer |
+| TM One Division Product Innovation |
+
+---
+
 ## Contents
 
 1. [Overview](#1-overview)
