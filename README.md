@@ -2,10 +2,6 @@
 
 <img src="https://www.tmone.com.my/wp-content/uploads/2026/02/RGB-TM80-TMOne-Lockup.svg" height="80" alt="TM One Logo" />
 
-<br/><br/>
-
-**Product Technology Development & Service Integration Support**
-
 <br/><br/><br/><br/><br/>
 
 # **SuperApp Framework**
