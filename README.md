@@ -36,11 +36,11 @@ The enclosed document cross refers the following documents:
 
 The enclosed document should be distributed to:
 
-| Department Name / Position |
-| -------------------------- |
+| Department Name / Position                                             |
+| ---------------------------------------------------------------------- |
 | TM ONE Division Integrated Operation Center / Network Operation Center |
-| TM ONE Division Technology Delivery / Technology Engineer |
-| TM One Division Product Innovation |
+| TM ONE Division Technology Delivery / Technology Engineer              |
+| TM One Division Product Innovation                                     |
 
 ---
 
@@ -94,17 +94,17 @@ A modular SuperApp mobile application built with React Native (Expo) that suppor
 
 ### 1.2 Tech Stack
 
-| Technology           | Purpose                                       |
-| -------------------- | --------------------------------------------- |
-| React Native (Expo)  | Mobile framework                              |
-| TypeScript           | Type-safe development                         |
-| Redux Toolkit        | Global state management                       |
-| redux-persist        | State persistence across restarts             |
-| AsyncStorage         | Device storage for persistence                |
-| React Navigation     | Screen navigation (stack + bottom tabs)       |
-| @expo/vector-icons   | Tab bar and UI icons                          |
-| expo-location        | GPS location for map centering _[Initiative]_ |
-| react-native-webview | Leaflet map rendering _[Initiative]_          |
+| Technology           | Purpose                                          |
+| -------------------- | ------------------------------------------------ |
+| React Native (Expo)  | Mobile framework                                 |
+| TypeScript           | Type-safe development                            |
+| Redux Toolkit        | Global state management                          |
+| redux-persist        | State persistence across restarts _[Initiative]_ |
+| AsyncStorage         | Device storage for persistence _[Initiative]_    |
+| React Navigation     | Screen navigation (stack + bottom tabs)          |
+| @expo/vector-icons   | Tab bar and UI icons                             |
+| expo-location        | GPS location for map centering _[Initiative]_    |
+| react-native-webview | Leaflet map rendering _[Initiative]_             |
 
 ---
 
