@@ -47,31 +47,35 @@ The enclosed document should be distributed to:
 ## Contents
 
 1. [Overview](#1-overview)
-   - [Application Objectives](#application-objectives)
-   - [Tech Stack](#tech-stack)
+   - [1.1 Application Objectives](#11-application-objectives)
+   - [1.2 Tech Stack](#12-tech-stack)
 2. [Setup Instructions](#2-setup-instructions)
-   - [Prerequisites](#prerequisites)
-   - [Installation](#installation)
-   - [Running on Specific Platforms](#running-on-specific-platforms)
+   - [2.1 Prerequisites](#21-prerequisites)
+   - [2.2 Installation](#22-installation)
+   - [2.3 Running on Specific Platforms](#23-running-on-specific-platforms)
 3. [Architecture](#3-architecture)
-   - [Container App](#31-container-app)
-   - [Shared Authentication Service](#32-shared-authentication-service)
-   - [Mini Apps](#33-mini-apps)
-   - [Navigation](#34-navigation)
-   - [Data Flow](#35-data-flow)
+   - [3.1 Container App](#31-container-app)
+   - [3.2 Shared Authentication Service](#32-shared-authentication-service)
+   - [3.3 Mini Apps](#33-mini-apps)
+   - [3.4 Navigation](#34-navigation)
+   - [3.5 Data Flow](#35-data-flow)
 4. [Folder Structure](#4-folder-structure)
 5. [State Management](#5-state-management)
-   - [Redux Toolkit](#51-redux-toolkit)
-   - [Slices](#52-slices)
-   - [Typed Hooks](#53-typed-hooks)
-   - [State Persistence](#54-state-persistence)
+   - [5.1 Redux Toolkit](#51-redux-toolkit)
+   - [5.2 Slices](#52-slices)
+   - [5.3 Typed Hooks](#53-typed-hooks)
+   - [5.4 State Persistence](#54-state-persistence)
 6. [How to Add New Mini Apps](#6-how-to-add-new-mini-apps)
+   - [6.1 Create the Mini App Screen](#61-create-the-mini-app-screen)
+   - [6.2 Build the Screen Component](#62-build-the-screen-component)
+   - [6.3 Register in AppNavigator](#63-register-in-appnavigator)
+   - [6.4 Add Mini App-Specific State (Optional)](#64-add-mini-app-specific-state-optional)
 7. [Initiatives](#7-initiatives-beyond-assignment-scope)
-   - [Geomatics Mini App](#71-geomatics-mini-app-map-view)
-   - [Shop Mini App](#72-shop-mini-app)
-   - [Role-Based Access Control (RBAC)](#73-role-based-access-control-rbac)
-   - [Persistent Login Session](#74-persistent-login-session-redux-persist)
-   - [Enhanced UI](#75-enhanced-ui)
+   - [7.1 Geomatics Mini App](#71-geomatics-mini-app-map-view)
+   - [7.2 Shop Mini App](#72-shop-mini-app)
+   - [7.3 Role-Based Access Control (RBAC)](#73-role-based-access-control-rbac)
+   - [7.4 Persistent Login Session](#74-persistent-login-session-redux-persist)
+   - [7.5 Enhanced UI](#75-enhanced-ui)
 8. [Assumptions](#8-assumptions)
 9. [Demo Accounts](#9-demo-accounts)
 
@@ -81,14 +85,14 @@ The enclosed document should be distributed to:
 
 A modular SuperApp mobile application built with React Native (Expo) that supports multiple Mini Apps under a single container with shared authentication.
 
-### Application Objectives
+### 1.1 Application Objectives
 
 - Provide a single container app hosting multiple self-contained Mini Apps
 - Centralise authentication and user session management via Redux
 - Enforce role-based access control at the navigation and feature level
 - Demonstrate extensible architecture for adding new Mini Apps with minimal boilerplate
 
-### Tech Stack
+### 1.2 Tech Stack
 
 | Technology           | Purpose                                       |
 | -------------------- | --------------------------------------------- |
@@ -106,13 +110,13 @@ A modular SuperApp mobile application built with React Native (Expo) that suppor
 
 ## 2. Setup Instructions
 
-### Prerequisites
+### 2.1 Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
 - Expo Go app on your phone (for physical device testing) or an iOS/Android simulator
 
-### Installation
+### 2.2 Installation
 
 ```bash
 # Clone the repository
@@ -128,7 +132,7 @@ npx expo start
 
 Scan the QR code with Expo Go (Android) or the Camera app (iOS) to run on your device.
 
-### Running on Specific Platforms
+### 2.3 Running on Specific Platforms
 
 ```bash
 npm run android    # Start on Android
@@ -339,14 +343,14 @@ Typed hooks (`useAppSelector`, `useAppDispatch`) in `src/app/hooks.ts` ensure fu
 
 Adding a new Mini App requires 3 steps.
 
-### Step 1: Create the Mini App screen
+### 6.1 Create the Mini App Screen
 
 ```
 src/miniApps/<featureName>/
 └── <Feature>Screen.tsx
 ```
 
-### Step 2: Build the screen component
+### 6.2 Build the Screen Component
 
 Use the shared typed hooks to access global state:
 
@@ -366,7 +370,7 @@ export default function MyFeatureScreen() {
 }
 ```
 
-### Step 3: Register in AppNavigator
+### 6.3 Register in AppNavigator
 
 In `src/navigation/AppNavigator.tsx`, add a `Tab.Screen` inside `MiniAppTabs`:
 
@@ -385,7 +389,7 @@ import MyFeatureScreen from "../miniApps/myFeature/MyFeatureScreen";
 />;
 ```
 
-### Optional: Add Mini App-specific state
+### 6.4 Add Mini App-Specific State (Optional)
 
 1. Create `src/features/<featureName>/featureSlice.ts`
 2. Register it in `src/app/store.ts`:
